@@ -1,0 +1,30 @@
+
+
+services:
+  db:
+    image: postgres:16.3
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_DB=zabs_db
+      - POSTGRES_USER=zabs_user
+      - POSTGRES_PASSWORD=zabs@pass
+
+  web:
+    build: .
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    environment:
+      - DB_NAME=zabs_db
+      - DB_USER=zabs_user
+      - DB_PASSWORD=zabs@pass
+      - DB_HOST=db
+      - DB_PORT=5432
+
+volumes:
+  postgres_data:

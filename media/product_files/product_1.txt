@@ -1,0 +1,4 @@
+Product Name: Fanta
+Description: Tasty Orange juice
+Brand or Trade Name: Coco Cola
+Standard: ISO 9001
