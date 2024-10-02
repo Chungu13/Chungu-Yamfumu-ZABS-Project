@@ -5,7 +5,7 @@ from zabs_project.admin_site import admin_site
 
 
 class CustomUserAdmin(DefaultUserAdmin):
-    list_display = ('username', 'email', 'phone_number', 'location', 'date_of_birth', 'gender', 'user_type')
+    list_display = ('id','username', 'email', 'phone_number', 'location', 'date_of_birth', 'gender', 'user_type')
     search_fields = ('username', 'email', 'phone_number')
     list_filter = ('gender', 'date_of_birth')
     ordering = ('username',)
@@ -27,19 +27,19 @@ class CustomUserAdmin(DefaultUserAdmin):
 
 
 class UserProfileAdmin(admin.ModelAdmin):
-    list_display = ('manufacturer', 'company_name', 'contact_person', 'position', 'mobile', 'email')
-    search_fields = ('manufacturer__username', 'company_name', 'contact_person', 'email')
-    ordering = ('manufacturer__username',)
+    list_display = ('id','user', 'company_name', 'contact_person', 'position', 'mobile', 'email')
+    search_fields = ('user__username', 'company_name', 'contact_person', 'email')
+    ordering = ('user__username',)
 
     fieldsets = (
-        (None, {'fields': ('manufacturer',)}),
+        (None, {'fields': ('user',)}),
         ('Company Details', {'fields': ('company_name', 'physical_address',  'postal_address', 'contact_person', 'position', 'mobile', 'email',  'website')}),
         # ('Manufacturing Location', {'fields': ('site_name', 'manufacturing_contact_person', 'manufacturing_physical_address', 'manufacturing_position', 'manufacturing_mobile', 'manufacturing_email', 'manufacturing_postal_address', 'factory_size_m2')}),
         ('How Did You Hear About ZABS', {'fields': ( 'Please_specify_how_you_heard_about_ZABS',)}),
     )
 
 
-# Registering the models with their admin classes
+
 admin_site.register(CustomUser, CustomUserAdmin)
 admin_site.register(UserProfile, UserProfileAdmin)
 

@@ -1,7 +1,8 @@
 # graphql/types.py
 import graphene
 from graphene_django.types import DjangoObjectType
-from apps.certifications.models import CertificationApplication, Document, ProductDetails, Certification
+from apps.certifications.models import CertificationApplication, Document, ProductDetails, Certification 
+
 from apps.users.models import CustomUser, UserProfile
 from apps.communication.models import Message 
 from apps.verifications.models import Verification, Feedback 
@@ -16,7 +17,7 @@ class CustomUserType(DjangoObjectType):
 class UserProfileType(DjangoObjectType):
     class Meta:
         model = UserProfile
-        fields = ('id', 'manufacturer', 'company_name', 'physical_address', 'postal_address', 'contact_person',  'position', 'email', 'website')
+        fields = ('id', 'manufacturer', 'company_name', 'physical_address', 'postal_address', 'contact_person', 'mobile',  'position', 'email', 'website')
 
 
 class CertificationApplicationType(DjangoObjectType):
@@ -49,7 +50,7 @@ class CertificationType(DjangoObjectType):
     class Meta:
         model = Certification
         fields = (
-            "id", "certification_application", "certification_id", "manufacturer",
+            "id", "certification_application", "custom_certification_id", "manufacturer","product",
             "first_issued", "last_issued", "modified_on", "expiry_date", "qr_code", "status"
         )
 
@@ -60,6 +61,7 @@ class MessageType(DjangoObjectType):
         model = Message
         fields = ('id', 'sender', 'recipient', 'content', 'timestamp')
         
+
 
 
 class VerificationType(DjangoObjectType):
@@ -74,3 +76,5 @@ class FeedbackType(DjangoObjectType):
     class Meta:
         model = Feedback
         fields = ('id', 'consumer', 'content', 'timestamp')           
+
+

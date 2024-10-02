@@ -8,6 +8,8 @@ from .types import ( CustomUserType, CertificationApplicationType, DocumentType,
 
 
 
+
+
 class Query(graphene.ObjectType):
     
     # For Querying all fields
@@ -34,9 +36,6 @@ class Query(graphene.ObjectType):
     
     
     
-    
-# Resolvers for all item queries
-# These functions know what exaclty  and where the data is 
 
 
     def resolve_all_custom_users(self, info):
@@ -69,7 +68,7 @@ class Query(graphene.ObjectType):
     
 
 
-# Resolvers for single item queries
+
     def resolve_custom_user(self, info, id):
         return CustomUser.objects.get(pk=id)
     
@@ -85,8 +84,8 @@ class Query(graphene.ObjectType):
     def resolve_document(self, info, id):
         return Document.objects.get(pk=id)
 
-    # def resolve_certification(self, info, id):
-    #     return Certification.objects.get(pk=id)
+    def resolve_certification(self, info, id):
+        return Certification.objects.get(pk=id)
     
     
     

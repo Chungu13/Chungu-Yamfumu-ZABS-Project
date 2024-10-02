@@ -6,6 +6,6 @@ class MessageAdmin(admin.ModelAdmin):
     list_display = ('sender', 'recipient', 'content', 'timestamp')
     search_fields = ('sender__user__username', 'content')
     list_filter = ('recipient', 'timestamp')
-    readonly_fields = ('timestamp',)  # Timestamp is auto-generated
+    readonly_fields = ('timestamp',)  
 
 admin_site.register(Message, MessageAdmin)

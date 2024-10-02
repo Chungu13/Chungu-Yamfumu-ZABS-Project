@@ -58,7 +58,7 @@ class CustomUser(AbstractUser):
 
 class UserProfile(models.Model):
     
-    manufacturer = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name='profile', limit_choices_to={'user_type': 'manufacturer'})
+    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name='profile', limit_choices_to={'user_type': 'manufacturer'})
     company_name = models.CharField(max_length=255, default='')
     contact_person = models.CharField(max_length=255, default='')
     physical_address = models.TextField(default='')
@@ -89,6 +89,28 @@ class UserProfile(models.Model):
     
     
     
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     # Excluded for now 
     
     # # Manufacturing Location if different from the one above 
@@ -100,8 +122,6 @@ class UserProfile(models.Model):
     # manufacturing_email = models.EmailField(blank=True, default='default@example.com')
     # manufacturing_postal_address = models.TextField(blank=True, default='')
     # factory_size_m2 = models.FloatField(blank=True, null=True, default=0.0)
-    
-    
     
     
 # class EmployeeInformation(models.Model):
@@ -180,33 +200,7 @@ class UserProfile(models.Model):
 #     def __str__(self):
 #         return f"Employee Info - Total Employees: {self.total_employees}"
         
-        
-        
-    
-    
-    
-    
-    
-    
 
-        
-        
-   
-
-    
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
     
         # department_name = models.CharField(max_length=50, choices=DEPARTMENT_CHOICES, default='')
         # shift_type= models.CharField(max_length=50, choices=SHIFT_CHOICES, default='')

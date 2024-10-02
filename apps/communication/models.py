@@ -3,11 +3,7 @@ from apps.users.models import CustomUser
 from django.utils import timezone
 
 
-# Defined a new class for the communication between the manufacturer and zabs
-# Defined fields for it.
-# created relationships between the userprofile and sender (one to many)
-# one userprofile can send many messages. 
-# one recipient can recieve many messages.
+
  
 class Message(models.Model):
    

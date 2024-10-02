@@ -9,11 +9,7 @@ from django.conf import settings
 from django.utils import timezone
 from django.utils.html import format_html
 
-#------------------------------------------------------------------------------------------------------
-# Created a relationship between the user profile and certification application
-# Removed the uncessary fileds 
-# ForeignKey to link with UserProfile model
-# one to many relationship - one user can be linked to multiple certification applications
+
 
 class CertificationApplication(models.Model):
     STATUS_CHOICES = [
@@ -30,17 +26,17 @@ class CertificationApplication(models.Model):
     has_target_assessment_date = models.BooleanField(default=False, help_text="Do you have a target assessment date?")
     target_assessment_date = models.DateField(null=True, blank=True, help_text="If yes, please indicate the date.")
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='submitted')
-    review_comment = models.TextField(blank=True, null=True)  # Review comments
-    rejection_reason = models.TextField(blank=True, null=True)  # Reason for rejection
+    review_comment = models.TextField(blank=True, null=True)  
+    rejection_reason = models.TextField(blank=True, null=True)  
     
     
     
  #---------------------------------------------------------------------------------------------------------------------------   
     def save(self, *args, **kwargs):
         if self.pk:
-             old_status = CertificationApplication.objects.get(pk=self.pk).status# Check if the object already exists (i.e., not a new object)
+             old_status = CertificationApplication.objects.get(pk=self.pk).status
              if old_status != self.status and self.status == 'rejected':
-                 if not self.rejection_reason:  # Ensure rejection reason is filled if status is 'rejected'
+                 if not self.rejection_reason:  
                       raise ValueError("Rejection reason must be provided when rejecting an application.")
         super().save(*args, **kwargs)
                      
@@ -66,8 +62,6 @@ class Document(models.Model):
 # Product Details  Model      
 
 class ProductDetails(models.Model):
-    # Modified this to a class and made a link bewtween the certification application and this class
-    # one to one relationship - one application can only be linked to one set of product details 
     
     certification_application = models.OneToOneField(CertificationApplication,on_delete=models.CASCADE,related_name='product_details')
     product_name = models.CharField(max_length=255, default='')
@@ -86,21 +80,11 @@ class ProductDetails(models.Model):
         super().save(*args, **kwargs)
 
 
-
-    
-    
-    
-#------------------------------------------------------------------------------------------------------------------------   
-# Certification Model 
-# Modified this class to exlude the unessasary fields 
-# Created a relationship between this class and the certification application
-# made the certification id custom and auto generated 
-    
 class Certification(models.Model):
-  
     certification_application = models.OneToOneField(CertificationApplication,on_delete=models.CASCADE,related_name='certification')
-    certification_id = models.CharField(max_length=255, unique=True, blank=True, editable=False)
+    custom_certification_id = models.CharField(max_length=255, unique=True, blank=True, editable=False)
     manufacturer = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
+    product = models.ForeignKey(ProductDetails, on_delete=models.CASCADE, related_name='certifications')
     first_issued = models.DateField(default=timezone.now, blank=False, null=True)
     last_issued = models.DateField(default=timezone.now, blank=False, null=True)
     modified_on = models.DateField(default=timezone.now, blank=False, null=False)
@@ -109,9 +93,9 @@ class Certification(models.Model):
     status = models.CharField(max_length=50, default='Approved')
     
     
+    
     def generate_qr_code(self):
         # Generate URL pointing to the GraphQL API
-       
         qr_url = f"http://localhost:8000/graphql?query={{certification(id:\"{self.id}\"){{certificationId manufacturer{{companyname}} firstIssued expiryDate status product{{productId productName description}}}}}}"
 
         qr = qrcode.QRCode(
@@ -132,50 +116,58 @@ class Certification(models.Model):
         qr_img.save(qr_file_path)
 
         self.qr_code = f'qr_codes/{qr_file_name}'
-        self.save()
-    
-
-             
-# ----------------------------------------------------------------------------------------------- 
-# Generation of Custom Certification ID 
-
-    def generate_certification_id(self):
+      
+        
+        
+     
+    # Generate Custom Certification ID
+    def generate_custom_certification_id(self):
         prefix = 'CRT'
         separator = '-'
 
         last_entry = Certification.objects.order_by('-id').first()
-        if last_entry:
-            last_id = last_entry.certification_id
-            numeric_part = last_id[:-len(prefix)].replace(separator, '')
+        if last_entry and last_entry.custom_certification_id:
+            
+            numeric_part = last_entry.custom_certification_id.replace(separator, '').replace(prefix, '')
             new_number = int(numeric_part) + 1
         else:
             new_number = 1
 
         formatted_number = f'{new_number:08}'
-        new_certification_id = f'{formatted_number[:3]}{separator}{formatted_number[3:5]}{separator}{formatted_number[5:]}{separator}{prefix}'
+        new_custom_certification_id = f'{formatted_number[:3]}{separator}{formatted_number[3:5]}{separator}{formatted_number[5:]}{separator}{prefix}'
 
-        return new_certification_id
+        return new_custom_certification_id
     
-    
-
-    def save(self, *args, **kwargs):
-        if not self.certification_id:
-            self.certification_id = self.generate_certification_id()
-        super().save(*args, **kwargs)
-        
         
     def save(self, *args, **kwargs):
-        # Check if certification_id is set
-        if not self.certification_id:
-            self.certification_id = self.generate_certification_id()
-
-        # Save the object first to ensure `self.id` is available
+  
         super().save(*args, **kwargs)
-        
-        # Generate QR code after the initial save
+    
+        if not self.custom_certification_id:
+            self.custom_certification_id = self.generate_custom_certification_id()
+       
+        super().save(update_fields=['custom_certification_id'])
+
         if not self.qr_code:
             self.generate_qr_code()
-        
-        # Save the object again with the QR code path
-        super().save(*args, **kwargs)
 
+        super().save(update_fields=['qr_code'])
+
+    
+    
+    
+    
+    
+
+    
+
+    
+        
+        
+
+
+
+
+
+
+             
