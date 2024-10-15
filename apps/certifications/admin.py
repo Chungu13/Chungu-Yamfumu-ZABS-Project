@@ -63,13 +63,14 @@ class ProductDetailsAdmin(admin.ModelAdmin):
     
 class CertificationAdmin(admin.ModelAdmin):
     
-    list_display = ('id','certification_application', 'custom_certification_id', 'manufacturer', 'product','first_issued','last_issued', 'expiry_date','status','qr_code_link')
+    list_display = ('id','certification_application', 'custom_certification_id', 'manufacturer', 'product','first_issued','last_issued', 'expiry_date','authorized_signature','status','qr_code_link', 'pdf_file')
     search_fields = ('id', 'manufacturer__user__username')
     list_filter = ('status', 'first_issued', 'expiry_date')
     
+    
     fieldsets = (
         (None, {'fields': ('certification_application','custom_certification_id', 'manufacturer', 'product', 'first_issued', 'last_issued', 
-                           'expiry_date', 'status')}), )
+                           'expiry_date', 'authorized_signature' 'status')}), )
     date_hierarchy = 'first_issued'
     readonly_fields = ('custom_certification_id','qr_code_link',) 
     
@@ -80,9 +81,6 @@ class CertificationAdmin(admin.ModelAdmin):
         return "No QR code available"
 
     qr_code_link.short_description = 'QR Code'
-
-    
-    
     
     
     

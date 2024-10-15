@@ -51,7 +51,7 @@ class CertificationType(DjangoObjectType):
         model = Certification
         fields = (
             "id", "certification_application", "custom_certification_id", "manufacturer","product",
-            "first_issued", "last_issued", "modified_on", "expiry_date", "qr_code", "status"
+            "first_issued", "last_issued", "modified_on", "expiry_date", "qr_code", "status", 'pdf_file'
         )
 
 

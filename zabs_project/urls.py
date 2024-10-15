@@ -22,7 +22,8 @@ from django.urls import path
 from django.views.decorators.csrf import csrf_exempt
 from graphene_django.views import GraphQLView
 from my_graphql.schema import schema  
-from .admin_site import admin_site  
+from .admin_site import admin_site 
+from apps.certifications import views 
 
 
 
@@ -31,7 +32,7 @@ from .admin_site import admin_site
 urlpatterns = [
     path('myadmin/', admin_site.urls),  # Your custom admin path
     path("graphql/", csrf_exempt(GraphQLView.as_view(graphiql=True, schema=schema))),# GraphQL endpoint
-  
+
 ]
 
 if settings.DEBUG:

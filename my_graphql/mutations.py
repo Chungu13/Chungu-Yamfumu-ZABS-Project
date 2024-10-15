@@ -9,6 +9,7 @@ from django.utils import timezone
 from decimal import Decimal
 from graphql import GraphQLError
 import re
+from apps.certifications.email import send_status_email
 
 
 # ----- CustomUser -----
@@ -207,8 +208,8 @@ class CreateCertificationApplication(graphene.Mutation):
             manufacturer=manufacturer, **kwargs
         )
         return CreateCertificationApplication(certification_application=certification_application)
-    
-
+ 
+ 
 class UpdateCertificationApplication(graphene.Mutation):
     certification_application = graphene.Field(CertificationApplicationType)
 
@@ -223,22 +224,31 @@ class UpdateCertificationApplication(graphene.Mutation):
         review_comment = graphene.String()
         rejection_reason = graphene.String()
 
-
     def mutate(self, info, certification_application_id, **kwargs):
-       
         try:
-           certification_application = CertificationApplication.objects.get(pk=certification_application_id)
+            certification_application = CertificationApplication.objects.get(pk=certification_application_id)
         except CertificationApplication.DoesNotExist:
             raise Exception("Certification Application not found")
         
+        # Store old status before update
+        old_status = certification_application.status
+
+        # Update the fields dynamically
         for key, value in kwargs.items():
             setattr(certification_application, key, value)
             
+        # Save changes to the database
         certification_application.save()
-        return UpdateCertificationApplication(certification_application=certification_application)
 
+        # Check if the status has changed
+        if 'status' in kwargs and kwargs['status'] != old_status:
+            # Trigger email if status has changed
+            send_status_email(certification_application)
 
-
+        return UpdateCertificationApplication(certification_application=certification_application) 
+ 
+ 
+ 
 class DeleteCertificationApplication(graphene.Mutation):
     success = graphene.Boolean()
 
@@ -256,6 +266,51 @@ class DeleteCertificationApplication(graphene.Mutation):
         certification_application.delete()
         return DeleteCertificationApplication(success=True)
     
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+    
+
+# class UpdateCertificationApplication(graphene.Mutation):
+#     certification_application = graphene.Field(CertificationApplicationType)
+
+#     class Arguments:
+#         certification_application_id = graphene.ID(required=True)
+#         quality_mark = graphene.Boolean()
+#         certified_local_supplier = graphene.Boolean()
+#         good_food_logo = graphene.Boolean()
+#         has_target_assessment_date = graphene.Boolean()
+#         target_assessment_date = graphene.Date()
+#         status = graphene.String() 
+#         review_comment = graphene.String()
+#         rejection_reason = graphene.String()
+
+
+#     def mutate(self, info, certification_application_id, **kwargs):
+       
+#         try:
+#            certification_application = CertificationApplication.objects.get(pk=certification_application_id)
+#         except CertificationApplication.DoesNotExist:
+#             raise Exception("Certification Application not found")
+        
+#         for key, value in kwargs.items():
+#             setattr(certification_application, key, value)
+            
+#         certification_application.save()
+#         return UpdateCertificationApplication(certification_application=certification_application)
+
+
+
 
 
 
