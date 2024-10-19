@@ -27,6 +27,7 @@ class CertificationApplication(models.Model):
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='submitted')
     review_comment = models.TextField(blank=True, null=True)  
     rejection_reason = models.TextField(blank=True, null=True)  
+    application_date = models.DateField(auto_now_add=True)  # Automatically set to the current date when created
     
     
     

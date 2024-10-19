@@ -75,6 +75,7 @@ Manufacturer Portal: http://localhost:8000
 
 Consumer Verification Portal: http://localhost:8000/verify
 
+
 ### Tech Stack
 ## Backend:
 Python Django: Core framework for backend development.

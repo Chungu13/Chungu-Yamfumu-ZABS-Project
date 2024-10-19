@@ -150,7 +150,7 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True  
 EMAIL_HOST_USER = 'chungumuloshi5086@gmail.com'  
-EMAIL_HOST_PASSWORD = 'Chungu@2003'  
+EMAIL_HOST_PASSWORD = 'jigr dppa oogu wmuc'  
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER  
 
 

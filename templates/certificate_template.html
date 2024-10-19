@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Certificate of Conformity</title>
+    <style>
+        body {
+            font-family: 'Helvetica', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #fff;
+        }
+        .container {
+            width: 800px;
+            margin: auto;
+            padding: 20px;
+            border: 2px solid #000;
+            border-radius: 10px;
+        }
+        h1 {
+            text-align: right;
+            font-size: 30px;
+            margin-top: 0;
+        }
+        .header {
+            text-align: left;
+            margin-bottom: 20px;
+        }
+        .header-info {
+            font-size: 12px;
+        }
+        .certification-id {
+            text-align: right;
+            font-weight: bold;
+            font-size: 16px;
+        }
+        .award-info {
+            text-align: center;
+            margin: 40px 0;
+        }
+        .footer {
+            margin-top: 50px;
+            font-size: 12px;
+        }
+        .signature {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>CERTIFICATE OF CONFORMITY</h1>
+        <div class="header">
+            <div class="header-info">
+                <p>{{ certification.manufacturer.company_name }}</p>
+                <p>(The Standard Act No. 4)</p>
+                <p>Lechwe House, Freedom Way - South End</p>
+                <p>P.O. Box 50259 ZA 15101, Ridgeway</p>
+                <p>Lusaka-Zambia</p>
+                <p>E-mail: info@zabs.org.zm | Tel: +260 211 231385 / 0777 764421</p>
+            </div>
+            <div class="certification-id">
+                <p>{{ certification.custom_certification_id }}</p>
+            </div>
+        </div>
+
+        <div class="award-info">
+            <h2>Awarded To</h2>
+            <h3>{{ certification.manufacturer.company_name }}</h3>
+            <p>{{ certification.manufacturer.physical_address }}</p>
+        </div>
+
+        <div>
+            <p>Manufactures and Supplies: {{ certification.product }}</p>
+            <p>In compliance with: ------------------------</p>
+            <p>Site(s): This is a single site certificate</p>
+            <p>Certification Scheme: ---------------------------</p>
+            <p>First Issued on: {{ certification.first_issued }}</p>
+            <p>Last Issued on: {{ certification.last_issued }}</p>
+            <p>Modified on: {{ certification.modified_on }}</p>
+            <p>Expiry: {{ certification.expiry_date }}</p>
+        </div>
+
+        <div class="footer">
+            <p class="signature">Authorized Signature</p>
+            <hr>
+            <p>Lechwe House, Freedom Way - South End</p>
+            <p>P.O. Box 50259 ZA 15101, Ridgeway, Lusaka-Zambia</p>
+            <p>E-mail: info@zabs.org.zm | Tel: +260 211 231385 / 0777 764421</p>
+        </div>
+    </div>
+</body>
+</html>

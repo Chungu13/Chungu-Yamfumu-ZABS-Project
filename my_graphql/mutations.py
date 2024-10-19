@@ -9,7 +9,7 @@ from django.utils import timezone
 from decimal import Decimal
 from graphql import GraphQLError
 import re
-from apps.certifications.email import send_status_email
+from utils.send_email import send_email
 
 
 # ----- CustomUser -----
@@ -209,46 +209,71 @@ class CreateCertificationApplication(graphene.Mutation):
         )
         return CreateCertificationApplication(certification_application=certification_application)
  
- 
+
 class UpdateCertificationApplication(graphene.Mutation):
     certification_application = graphene.Field(CertificationApplicationType)
 
     class Arguments:
         certification_application_id = graphene.ID(required=True)
+        status = graphene.String(required=True)
         quality_mark = graphene.Boolean()
         certified_local_supplier = graphene.Boolean()
         good_food_logo = graphene.Boolean()
         has_target_assessment_date = graphene.Boolean()
         target_assessment_date = graphene.Date()
-        status = graphene.String() 
         review_comment = graphene.String()
         rejection_reason = graphene.String()
 
-    def mutate(self, info, certification_application_id, **kwargs):
+    def mutate(self, info, certification_application_id, status, **kwargs):
         try:
             certification_application = CertificationApplication.objects.get(pk=certification_application_id)
-        except CertificationApplication.DoesNotExist:
-            raise Exception("Certification Application not found")
-        
-        # Store old status before update
-        old_status = certification_application.status
+            certification = Certification.objects.get(certification_application=certification_application)
+        except (CertificationApplication.DoesNotExist, Certification.DoesNotExist):
+            raise Exception("Certification or Certification Application not found")
 
-        # Update the fields dynamically
+        # Update fields based on kwargs
         for key, value in kwargs.items():
             setattr(certification_application, key, value)
             
-        # Save changes to the database
+        certification_application.status = status
         certification_application.save()
 
-        # Check if the status has changed
-        if 'status' in kwargs and kwargs['status'] != old_status:
-            # Trigger email if status has changed
-            send_status_email(certification_application)
+        # Prepare context for email
+        context = {
+            'user_name': certification_application.manufacturer,  # From CertificationApplication
+            'application_id': certification.custom_certification_id,  # From Certification
+            'certification_application_id': certification_application.id,  # From Certification
+            'approval_date': certification.last_issued,  # From Certification
+            'pdf_link': certification.pdf_file,  # From Certification
+            'qr_code_link': certification.qr_code,  # From Certification
+            'rejection_date': certification_application.application_date,  # From CertificationApplication
+            'rejection_reason': certification_application.rejection_reason,  # From CertificationApplication
+            'submission_date': certification_application.application_date,  # From CertificationApplication
+            'review_start_date': certification_application.application_date  # From CertificationApplication
+        }
 
-        return UpdateCertificationApplication(certification_application=certification_application) 
- 
- 
- 
+        # Determine email template and subject based on status
+        if status == 'Approved':
+            subject = "Your Certification Application is Approved"
+            template_name = "approved_email.html"
+        elif status == 'Rejected':
+            subject = "Your Certification Application has been Rejected"
+            template_name = "rejection_email.html"
+        elif status == 'Submitted':
+            subject = "Your Certification Application has been Submitted"
+            template_name = "submitted_email.html"
+        elif status == 'Reviewing':
+            subject = "Your Certification Application is Under Review"
+            template_name = "review_email.html"
+        else:
+            raise Exception("Invalid status.")
+
+        # Send the email
+        send_email(subject, template_name, context, [certification_application.manufacturer.user.email])
+
+        return UpdateCertificationApplication(certification_application=certification_application)
+
+    
 class DeleteCertificationApplication(graphene.Mutation):
     success = graphene.Boolean()
 
@@ -265,22 +290,74 @@ class DeleteCertificationApplication(graphene.Mutation):
         
         certification_application.delete()
         return DeleteCertificationApplication(success=True)
-    
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
-    
 
+
+
+
+
+
+
+# class UpdateCertificationApplication(graphene.Mutation):
+#     class Arguments:
+#         certification_id = graphene.ID(required=True)
+#         status = graphene.String(required=True)
+
+#     success = graphene.Boolean()
+
+#     def mutate(self, info, certification_id, status):
+#         # Fetch the certification object
+#         certification = Certification.objects.get(id=certification_id)
+        
+        
+#         # Update the status
+#         certification.status = status
+#         certification.save()
+
+#         # Prepare context for the email
+#         context = {
+#             'user_name' : certification.certification_application.manufacturer,
+#             'application_id': certification.custom_certification_id,
+#             'certification_application_id' : certification_id, 
+#             'approval_date': certification.last_issued,  # Adjust based on the status
+#             'pdf_link': certification.pdf_file,
+#             'qr_code_link': certification.qr_code,
+#             'rejection_date':certification.certification_application.application_date,
+#             'rejection_reason': certification.certification_application.rejection_reason,
+#             'rejection_date' : certification.certification_application.application_date,
+#             'submission_date' : certification.certification_application.application_date,
+#             'review_start_date': certification.certification_application.application_date
+            
+#         }
+
+#         # Determine the template and subject based on the new status
+#         if status == 'Approved':
+#             subject = "Your Certification Application is Approved"
+#             template_name = "approved_email.html"
+#             # Add more fields if necessary
+#         elif status == 'Rejected':
+#             subject = "Your Certification Application has been Rejected"
+#             template_name = "rejection_email.html"
+#             # Add rejection reason to context
+#         elif status == 'Submitted':
+#             subject = "Your Certification Application has been Submitted"
+#             template_name = "submitted_email.html"
+#             # Add submission date to context
+#         elif status == 'Under Review':
+#             subject = "Your Certification Application is Under Review"
+#             template_name = "review_email.html"
+#             # Add review start date to context
+#         else:
+#             raise GraphQLError("Invalid status.")
+
+#         # Send the email
+#         send_email(subject, template_name, context, [certification.certification_application.manufacturer.user.email])
+
+#         return UpdateCertificationApplication(success=True)
+
+
+
+    
+ 
 # class UpdateCertificationApplication(graphene.Mutation):
 #     certification_application = graphene.Field(CertificationApplicationType)
 
@@ -295,19 +372,61 @@ class DeleteCertificationApplication(graphene.Mutation):
 #         review_comment = graphene.String()
 #         rejection_reason = graphene.String()
 
-
 #     def mutate(self, info, certification_application_id, **kwargs):
-       
 #         try:
-#            certification_application = CertificationApplication.objects.get(pk=certification_application_id)
+#             certification_application = CertificationApplication.objects.get(pk=certification_application_id)
 #         except CertificationApplication.DoesNotExist:
 #             raise Exception("Certification Application not found")
         
+#         # Store old status before update
+#         old_status = certification_application.status
+
+#         # Update the fields dynamically
 #         for key, value in kwargs.items():
 #             setattr(certification_application, key, value)
             
+#         # Save changes to the database
 #         certification_application.save()
-#         return UpdateCertificationApplication(certification_application=certification_application)
+
+#         # Check if the status has changed
+#         if 'status' in kwargs and kwargs['status'] != old_status:
+#             # Trigger email if status has changed
+#             send_status_email(certification_application)
+
+#         return UpdateCertificationApplication(certification_application=certification_application) 
+ 
+ 
+ 
+
+    
+
+class UpdateCertificationApplication(graphene.Mutation):
+    certification_application = graphene.Field(CertificationApplicationType)
+
+    class Arguments:
+        certification_application_id = graphene.ID(required=True)
+        quality_mark = graphene.Boolean()
+        certified_local_supplier = graphene.Boolean()
+        good_food_logo = graphene.Boolean()
+        has_target_assessment_date = graphene.Boolean()
+        target_assessment_date = graphene.Date()
+        status = graphene.String() 
+        review_comment = graphene.String()
+        rejection_reason = graphene.String()
+
+
+    def mutate(self, info, certification_application_id, **kwargs):
+       
+        try:
+           certification_application = CertificationApplication.objects.get(pk=certification_application_id)
+        except CertificationApplication.DoesNotExist:
+            raise Exception("Certification Application not found")
+        
+        for key, value in kwargs.items():
+            setattr(certification_application, key, value)
+            
+        certification_application.save()
+        return UpdateCertificationApplication(certification_application=certification_application)
 
 
 

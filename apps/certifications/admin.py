@@ -70,7 +70,7 @@ class CertificationAdmin(admin.ModelAdmin):
     
     fieldsets = (
         (None, {'fields': ('certification_application','custom_certification_id', 'manufacturer', 'product', 'first_issued', 'last_issued', 
-                           'expiry_date', 'authorized_signature' 'status')}), )
+                           'expiry_date', 'authorized_signature', 'status')}), )
     date_hierarchy = 'first_issued'
     readonly_fields = ('custom_certification_id','qr_code_link',) 
     
