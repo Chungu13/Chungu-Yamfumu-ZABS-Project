@@ -1,5 +1,9 @@
 # ZABS Certification and Verification System
 
+Developed during my internship at Yamfumu Technologies
+**My Role:** Backend Developer (Django/Python)
+**Project Type:** Internship Project | Team Collaboration
+
 ## Overview
 
 The ZABS Certification and Verification System facilitates manufacturers in performing the certification process online and enables consumers to verify product certifications using their mobile devices through a web app or a dedicated mobile app. The system automatically generates QR codes upon certification issuance for easy verification.
