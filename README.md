@@ -38,8 +38,8 @@ Follow the steps below to set up the project on your local machine.
 Clone the repository to your local path:
 
 ```sh
-git clone https://github.com/yamfumu-tech/zabs-project.git
-cd zabs-project
+git clone https://github.com/Chungu13/Chungu-Yamfumu-ZABS-Project.git
+cd Chungu-Yamfumu-ZABS-Project
 
 ## 2. Activate Virtual Environment
 Create and activate a virtual environment:
