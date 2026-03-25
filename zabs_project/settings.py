@@ -29,7 +29,11 @@ ALLOWED_HOSTS = [
     'localhost',
     '192.168.1.134',
     '127.0.0.1',
+    'chungu-yamfumu-zabs-project.onrender.com',
 ]
+
+
+
 
 
 # Application definition
