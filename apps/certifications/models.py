@@ -129,16 +129,23 @@ class Certification(models.Model):
 
         last_entry = Certification.objects.order_by('-id').first()
         if last_entry and last_entry.custom_certification_id:
-            
-            numeric_part = last_entry.custom_certification_id.replace(separator, '').replace(prefix, '')
-            new_number = int(numeric_part) + 1
+            # Extract only numeric characters to get the seed number
+            import re
+            numeric_part = "".join(re.findall(r'\d+', last_entry.custom_certification_id))
+            if numeric_part:
+                new_number = int(numeric_part) + 1
+            else:
+                new_number = 1
         else:
             new_number = 1
 
-        formatted_number = f'{new_number:08}'
-        new_custom_certification_id = f'{formatted_number[:3]}{separator}{formatted_number[3:5]}{separator}{formatted_number[5:]}{separator}{prefix}'
-
-        return new_custom_certification_id
+        # Keep incrementing until we find a truly unique ID (collision check)
+        while True:
+            formatted_number = f'{new_number:08}'
+            new_id = f'{formatted_number[:3]}{separator}{formatted_number[3:5]}{separator}{formatted_number[5:]}{separator}{prefix}'
+            if not Certification.objects.filter(custom_certification_id=new_id).exists():
+                return new_id
+            new_number += 1
     
     
     
