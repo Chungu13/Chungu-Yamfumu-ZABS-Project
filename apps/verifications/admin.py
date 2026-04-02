@@ -3,9 +3,9 @@ from zabs_project.admin_site import admin_site
 from .models import Verification, Feedback
 
 class VerificationAdmin(admin.ModelAdmin):
-    list_display = ('id', 'certification','verified_by', 'verification_date', 'status')     
+    list_display = ('id', 'certification', 'verification_date', 'status')     
     list_filter = ('status', 'verification_date')
-    search_fields = ('certification__product_name', 'verified_by__user__username')
+    search_fields = ('certification__product_name',)
 
 
 

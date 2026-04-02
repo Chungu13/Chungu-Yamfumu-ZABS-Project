@@ -5,12 +5,11 @@ from apps.users.models import CustomUser
 
 class Verification(models.Model):
     certification = models.ForeignKey(Certification, on_delete=models.CASCADE)
-    verified_by = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='verifications' , limit_choices_to={'user_type': 'consumer'})
     verification_date = models.DateTimeField(auto_now_add=True)
     status = models.BooleanField(default=False)
 
     def __str__(self):
-        return f"Verification of {self.certification} by {self.verified_by.username}"
+        return f"Verification of {self.certification} at {self.verification_date}"
 
 
 

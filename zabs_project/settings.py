@@ -56,7 +56,7 @@ INSTALLED_APPS = [
 
 
 GRAPHENE = {
-    'SCHEMA': 'zabs_project.graphql.schema.schema'
+    'SCHEMA': 'my_graphql.schema.schema'
 }
 
 
