@@ -22,5 +22,4 @@ RUN pip install -r requirements.txt
 # Copy project files to the working directory
 COPY . /app/
 
-# Run the Django development server
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+CMD ["sh", "-c", "python manage.py migrate && python manage.py collectstatic --noinput && (python manage.py createsuperuser --noinput || true) && gunicorn zabs_project.wsgi:application --bind 0.0.0.0:$PORT"]
