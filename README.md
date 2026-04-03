@@ -15,7 +15,7 @@
 
 https://www.loom.com/share/2fa204abf864485cb815e60f5c6f4e89
 
-> Covers the full certification flow — ZABS admin issues a certification, QR code is automatically generated, consumer scans the QR code and retrieves full product and certification details.
+> Covers the full certification flow -  ZABS admin issues a certification, QR code is automatically generated, consumer scans the QR code and retrieves full product and certification details.
 
 ---
 
@@ -66,21 +66,21 @@ I was responsible for the entire backend of the system. This included designing 
 
 ## Key Engineering Decisions
 
-- **GraphQL API** — Used Graphene-Django to expose a single flexible API endpoint. Mutations handle all create/update/delete operations while queries power the consumer verification flow when a QR code is scanned.
+- **GraphQL API** - Used Graphene-Django to expose a single flexible API endpoint. Mutations handle all create/update/delete operations while queries power the consumer verification flow when a QR code is scanned.
 
-- **Automated QR code generation** — QR codes are generated server-side automatically when a certification is issued. Each QR code is tied to a unique certification ID, ensuring the verification query always returns accurate product and certification details.
+- **Automated QR code generation** - QR codes are generated server-side automatically when a certification is issued. Each QR code is tied to a unique certification ID, ensuring the verification query always returns accurate product and certification details.
 
-- **Role-based access control** — Three distinct user types: `manufacturer`, `admin`, and `consumer`. Each role has access only to the operations relevant to their function. For example only consumers can trigger verifications, and only admins can issue certifications.
+- **Role-based access control** - Three distinct user types: `manufacturer`, `admin`, and `consumer`. Each role has access only to the operations relevant to their function. For example only consumers can trigger verifications, and only admins can issue certifications.
 
-- **Email notification pipeline** — Status changes on certification applications automatically trigger HTML email notifications to the manufacturer. Each status (`submitted`, `reviewing`, `approved`, `rejected`) maps to a dedicated email template.
+- **Email notification pipeline** - Status changes on certification applications automatically trigger HTML email notifications to the manufacturer. Each status (`submitted`, `reviewing`, `approved`, `rejected`) maps to a dedicated email template.
 
-- **Docker-first setup** — Full backend containerised via docker-compose for consistent local development and deployment environments.
+- **Docker-first setup** - Full backend containerised via docker-compose for consistent local development and deployment environments.
 
 ---
 
 ## Features
 
-### 🏭 Manufacturer Portal
+###  Manufacturer Portal
 - Register and authenticate securely
 - Submit certification applications online
 - Track real-time status of applications (`Submitted → Reviewing → Approved/Rejected`)
@@ -88,14 +88,14 @@ I was responsible for the entire backend of the system. This included designing 
 - Receive email notifications on every status change
 - Message ZABS officials directly through the platform
 
-### 🏛️ ZABS Admin Portal
+###  ZABS Admin Portal
 - Manage manufacturer accounts and roles
 - Review and process certification applications
 - Access and review submitted documents
 - Issue digital certificates with automatically generated QR codes
 - Generate reports on certification activities and statistics
 
-### 📱 Consumer Verification Portal
+###  Consumer Verification Portal
 - Scan QR codes via mobile app or web app
 - Instantly retrieve product and certification details
 - Search for products and verify certifications manually
