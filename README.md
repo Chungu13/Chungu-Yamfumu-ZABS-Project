@@ -152,8 +152,8 @@ docker-compose exec web python manage.py createsuperuser
 
 | Portal | URL |
 |---|---|
-| Admin Portal | https://chungu-yamfumu-zabs-project.onrender.com/myadmin/login/?next=/myadmin/ |
-| GraphQL API | https://chungu-yamfumu-zabs-project.onrender.com/graphql/ |
+| Admin Portal | http://localhost:8000/myadmin/ |
+| GraphQL API | http://localhost:8000/graphql/ |
 
 ---
 
