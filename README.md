@@ -13,7 +13,7 @@
 
 ## 🎥 Demo
 
-[ADD YOUR LOOM LINK HERE]
+[(https://www.loom.com/share/2fa204abf864485cb815e60f5c6f4e89)]
 
 > Covers the full certification flow — ZABS admin issues a certification, QR code is automatically generated, consumer scans the QR code and retrieves full product and certification details.
 
