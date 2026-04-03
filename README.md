@@ -1,95 +1,151 @@
 # ZABS Certification and Verification System
 
-Developed during my internship at Yamfumu Technologies
-**My Role:** Backend Developer (Django/Python)
-**Project Type:** Internship Project | Team Collaboration
+> A full-stack certification management platform built for the Zambia Bureau of Standards (ZABS). Manufacturers apply for product certifications online, ZABS officials review and approve applications, and consumers verify certified products by scanning a QR code.
 
-## Overview
+[![Python](https://img.shields.io/badge/Python-3.11-3776AB?logo=python)](https://www.python.org/)
+[![Django](https://img.shields.io/badge/Django-4.x-092E20?logo=django)](https://www.djangoproject.com/)
+[![GraphQL](https://img.shields.io/badge/GraphQL-API-E10098?logo=graphql)](https://graphql.org/)
+[![Docker](https://img.shields.io/badge/Docker-Containerized-2496ED?logo=docker)](https://www.docker.com/)
+[![React](https://img.shields.io/badge/React-Next.js-61DAFB?logo=react)](https://react.dev/)
+[![Flutter](https://img.shields.io/badge/Flutter-Mobile-02569B?logo=flutter)](https://flutter.dev/)
 
-The ZABS Certification and Verification System facilitates manufacturers in performing the certification process online and enables consumers to verify product certifications using their mobile devices through a web app or a dedicated mobile app. The system automatically generates QR codes upon certification issuance for easy verification.
+---
 
-## Key Features
+## 🎥 Demo
 
-- **Manufacturer Portal:**
-  - Registration and Authentication: Secure sign-up and login for manufacturers.
-  - Certification Application: Apply for product certifications online.
-  - Application Tracking: Real-time status tracking of certification applications.
-  - Document Management: Upload, store, and manage certification-related documents.
-  - Communication: Messaging system for communication between manufacturers and ZABS officials.
-  - QR Code Generation: Automatic generation of QR codes upon successful certification issuance.
-- **ZABS Admin Portal:**
-  - User Management: Manage manufacturers' accounts and roles.
-  - Certification Management: Review and process certification applications.
-  - Document Review: Access and review submitted documents.
-  - Approval and Issuance: Approve certifications and issue digital certificates with QR codes.
-  - Reporting and Analytics: Generate reports on certification activities and statistics.
-- **Consumer Verification Portal:**
-  - QR Code Scanning: Mobile app and web app for consumers to scan QR codes.
-  - Product Verification: Display certification details and product information upon scanning.
-  - Search Functionality: Allow consumers to search for products and verify their certifications manually.
-  - Feedback and Reporting: Consumers can report issues or provide feedback on product certifications.
+[ADD YOUR LOOM LINK HERE]
 
-## Installation
+> Covers the full certification flow — ZABS admin issues a certification, QR code is automatically generated, consumer scans the QR code and retrieves full product and certification details.
 
-Follow the steps below to set up the project on your local machine.
+---
 
-### 1. Pull the Code
+## Problem & Solution
 
-Clone the repository to your local path:
+Product certification in Zambia has traditionally been a manual, paper-based process. Manufacturers had no way to apply online, ZABS officials had no central system to manage applications, and consumers had no reliable way to verify whether a product was genuinely certified.
 
-```sh
+The ZABS Certification and Verification System solves this end to end. Manufacturers apply online, ZABS officials review and approve applications through an admin portal, and upon approval the system automatically generates a QR code. Consumers can then scan the QR code on any mobile device to instantly verify a product's certification status.
+
+---
+
+## My Role
+
+**Backend Developer (Django/Python) — Internship at Yamfumu Technologies, 2024**
+
+I was responsible for the entire backend of the system. This included designing the database schema, building the GraphQL API, implementing authentication and role-based access control, automating QR code generation on certification issuance, and setting up the email notification system. The frontend (React/Next.js and Flutter) was developed by a separate team.
+
+---
+
+## Tech Stack
+
+| Layer | Technology |
+|---|---|
+| Backend | Python, Django |
+| API | GraphQL (Graphene-Django) |
+| Database | PostgreSQL |
+| Authentication | Django Auth, JWT, Role-Based Access Control |
+| QR Code Generation | Automated on certification issuance |
+| Email Notifications | Django Email with HTML templates |
+| Containerization | Docker, docker-compose |
+| Frontend | React.js (Next.js) *(separate team)* |
+| Mobile | Dart (Flutter) *(separate team)* |
+
+---
+
+## Key Engineering Decisions
+
+- **GraphQL API** — Used Graphene-Django to expose a single flexible API endpoint. Mutations handle all create/update/delete operations while queries power the consumer verification flow when a QR code is scanned.
+
+- **Automated QR code generation** — QR codes are generated server-side automatically when a certification is issued. Each QR code is tied to a unique certification ID, ensuring the verification query always returns accurate product and certification details.
+
+- **Role-based access control** — Three distinct user types: `manufacturer`, `admin`, and `consumer`. Each role has access only to the operations relevant to their function. For example only consumers can trigger verifications, and only admins can issue certifications.
+
+- **Email notification pipeline** — Status changes on certification applications automatically trigger HTML email notifications to the manufacturer. Each status (`submitted`, `reviewing`, `approved`, `rejected`) maps to a dedicated email template.
+
+- **Docker-first setup** — Full backend containerised via docker-compose for consistent local development and deployment environments.
+
+---
+
+## Features
+
+### 🏭 Manufacturer Portal
+- Register and authenticate securely
+- Submit certification applications online
+- Track real-time status of applications (`Submitted → Reviewing → Approved/Rejected`)
+- Upload and manage certification-related documents
+- Receive email notifications on every status change
+- Message ZABS officials directly through the platform
+
+### 🏛️ ZABS Admin Portal
+- Manage manufacturer accounts and roles
+- Review and process certification applications
+- Access and review submitted documents
+- Issue digital certificates with automatically generated QR codes
+- Generate reports on certification activities and statistics
+
+### 📱 Consumer Verification Portal
+- Scan QR codes via mobile app or web app
+- Instantly retrieve product and certification details
+- Search for products and verify certifications manually
+- Submit feedback or report issues on product certifications
+
+---
+
+## Architecture
+
+```
+.
+├── apps/
+│   ├── certifications/     # Certification applications, product details, documents
+│   ├── users/              # Custom user model, user profiles
+│   ├── communication/      # Messaging between manufacturers and ZABS
+│   └── verifications/      # Consumer verification and feedback
+├── utils/
+│   └── send_email.py       # Email notification utility
+├── schema.py               # GraphQL schema (queries + mutations)
+├── docker-compose.yml      # Full stack orchestration
+└── manage.py
+```
+
+---
+
+## Local Setup
+
+### Prerequisites
+- Docker Desktop
+
+### 1. Clone the Repository
+```bash
 git clone https://github.com/Chungu13/Chungu-Yamfumu-ZABS-Project.git
 cd Chungu-Yamfumu-ZABS-Project
+```
 
-## 2. Activate Virtual Environment
-Create and activate a virtual environment:
-
-python -m venv venv
-source venv\Scripts\activate
-
-## 3. Start Docker
-Make sure Docker Desktop is installed and running. After the Docker engine is running, proceed with the following steps.
-
-
-## 4. Run Docker Compose
-Navigate to your project directory and open a terminal. Run:
-
-
+### 2. Start Docker
+```bash
 docker-compose up --build
+```
 
-## 5. Run Migrations
-After the Docker containers are up and running, apply the migrations:
-
-
+### 3. Run Migrations
+```bash
 docker-compose exec web python manage.py makemigrations
-
 docker-compose exec web python manage.py migrate
+```
 
-##6. Create a Superuser (Optional)
-If you need admin access, create a superuser: 
+### 4. Create a Superuser (Optional)
+```bash
+docker-compose exec web python manage.py createsuperuser
+```
 
+### 5. Access the Application
 
-docker-compose exec web python manage.py createsuperuser  
+| Portal | URL |
+|---|---|
+| Admin Portal | http://localhost:8000/admin |
+| GraphQL API | http://localhost:8000/graphql |
+| Manufacturer Portal | http://localhost:8000 |
+| Consumer Verification | http://localhost:8000/verify |
 
+---
 
-## 7. Access the Application
-Admin Portal: http://localhost:8000/admin
+## About
 
-Manufacturer Portal: http://localhost:8000
-
-Consumer Verification Portal: http://localhost:8000/verify
-
-
-### Tech Stack
-## Backend:
-Python Django: Core framework for backend development.
-PostgreSQL: Database management system for storing application data.
-GraphQL: API framework for efficient data querying and manipulation.
-Docker: Containerization for consistent deployment environments.
-
-## Frontend:
-React.js (Next.js): Frontend framework for building responsive web applications.
-Dart (Flutter): Framework for developing cross-platform mobile applications.
-
-
-
+Built during my internship at Yamfumu Technologies to digitise the product certification process for the Zambia Bureau of Standards. The project gave me hands-on experience designing GraphQL APIs, implementing role-based access control, automating background processes like QR code generation and email notifications, and containerising a Django application with Docker.
